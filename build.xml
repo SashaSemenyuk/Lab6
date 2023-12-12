@@ -1,0 +1,39 @@
+<project name="hello" basedir="src" default="main">
+
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir" value="${build.dir}/jar"/>
+    <property name="main-class" value="build.classes.MainPackage.MainClass"/>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <manifest file="MANIFEST.MF">
+            <attribute name="Main-Class" value="MainPackage.MainClass"/>
+        </manifest>
+        <jar destfile="pism6.jar"
+             basedir="src"
+             includes="*.class"
+             manifest="MANIFEST.MF">
+            <fileset dir="build/classes">
+                <include name="**/*.class"/>
+                <exclude name="**/CVS"/>
+            </fileset>
+        </jar>
+    </target>
+
+    <target name="run" depends="jar">
+        <java jar="pism6.jar" fork="true"/>
+    </target>
+
+    <target name="clean-build" depends="clean,jar"/>
+    <target name="main" depends="clean,run"/>
+</project>
